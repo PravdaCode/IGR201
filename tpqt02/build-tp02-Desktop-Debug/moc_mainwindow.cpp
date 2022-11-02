@@ -73,7 +73,7 @@ static const uint qt_meta_data_MainWindow[] = {
  // slots: parameters
     QMetaType::Void,
     QMetaType::Void,
-    QMetaType::Void,
+    QMetaType::Int,
     QMetaType::Void, 0x80000000 | 6,    2,
     QMetaType::Void,
     QMetaType::Void,
@@ -89,7 +89,8 @@ void MainWindow::qt_static_metacall(QObject *_o, QMetaObject::Call _c, int _id, 
         switch (_id) {
         case 0: _t->openFile(); break;
         case 1: _t->saveFile(); break;
-        case 2: _t->quitApp(); break;
+        case 2: { int _r = _t->quitApp();
+            if (_a[0]) *reinterpret_cast< int*>(_a[0]) = std::move(_r); }  break;
         case 3: _t->changeDraw((*reinterpret_cast< typeDraw(*)>(_a[1]))); break;
         case 4: _t->colorConfig(); break;
         case 5: _t->sizeConfig(); break;

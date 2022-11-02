@@ -55,11 +55,13 @@ OBJECTS_DIR   = ./
 SOURCES       = ../tp02/draw.cpp \
 		../tp02/main.cpp \
 		../tp02/mainwindow.cpp \
-		../tp02/myshape.cpp moc_mainwindow.cpp
+		../tp02/myshape.cpp qrc_rsc.cpp \
+		moc_mainwindow.cpp
 OBJECTS       = draw.o \
 		main.o \
 		mainwindow.o \
 		myshape.o \
+		qrc_rsc.o \
 		moc_mainwindow.o
 DIST          = /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf \
@@ -273,7 +275,8 @@ Makefile: ../tp02/tp02.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/exceptions.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf \
 		/usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf \
-		../tp02/tp02.pro
+		../tp02/tp02.pro \
+		../tp02/rsc.qrc
 	$(QMAKE) -o Makefile ../tp02/tp02.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/spec_pre.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/common/unix.conf:
@@ -373,6 +376,7 @@ Makefile: ../tp02/tp02.pro /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++/qmake
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/yacc.prf:
 /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/lex.prf:
 ../tp02/tp02.pro:
+../tp02/rsc.qrc:
 qmake: FORCE
 	@$(QMAKE) -o Makefile ../tp02/tp02.pro -spec linux-g++ CONFIG+=debug CONFIG+=qml_debug
 
@@ -387,6 +391,7 @@ dist: distdir FORCE
 distdir: FORCE
 	@test -d $(DISTDIR) || mkdir -p $(DISTDIR)
 	$(COPY_FILE) --parents $(DIST) $(DISTDIR)/
+	$(COPY_FILE) --parents ../tp02/rsc.qrc $(DISTDIR)/
 	$(COPY_FILE) --parents /usr/lib/x86_64-linux-gnu/qt5/mkspecs/features/data/dummy.cpp $(DISTDIR)/
 	$(COPY_FILE) --parents ../tp02/draw.h ../tp02/mainwindow.h ../tp02/myshape.h ../tp02/typeDraw.h $(DISTDIR)/
 	$(COPY_FILE) --parents ../tp02/draw.cpp ../tp02/main.cpp ../tp02/mainwindow.cpp ../tp02/myshape.cpp $(DISTDIR)/
@@ -414,8 +419,23 @@ check: first
 
 benchmark: first
 
-compiler_rcc_make_all:
+compiler_rcc_make_all: qrc_rsc.cpp
 compiler_rcc_clean:
+	-$(DEL_FILE) qrc_rsc.cpp
+qrc_rsc.cpp: ../tp02/rsc.qrc \
+		/usr/lib/qt5/bin/rcc \
+		../tp02/icons/images/save.png \
+		../tp02/icons/images/open.png \
+		../tp02/icons/images/cut.png \
+		../tp02/icons/images/elipse.png \
+		../tp02/icons/images/line.png \
+		../tp02/icons/images/copy.png \
+		../tp02/icons/images/rectangle.png \
+		../tp02/icons/images/quit.png \
+		../tp02/icons/images/paste.png \
+		../tp02/icons/images/new.png
+	/usr/lib/qt5/bin/rcc -name rsc ../tp02/rsc.qrc -o qrc_rsc.cpp
+
 compiler_moc_predefs_make_all: moc_predefs.h
 compiler_moc_predefs_clean:
 	-$(DEL_FILE) moc_predefs.h
@@ -450,7 +470,7 @@ compiler_yacc_impl_make_all:
 compiler_yacc_impl_clean:
 compiler_lex_make_all:
 compiler_lex_clean:
-compiler_clean: compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
+compiler_clean: compiler_rcc_clean compiler_moc_predefs_clean compiler_moc_header_clean compiler_uic_clean 
 
 ####### Compile
 
@@ -473,9 +493,11 @@ mainwindow.o: ../tp02/mainwindow.cpp ../tp02/mainwindow.h \
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o mainwindow.o ../tp02/mainwindow.cpp
 
 myshape.o: ../tp02/myshape.cpp ../tp02/myshape.h \
-		../tp02/draw.h \
 		../tp02/typeDraw.h
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o myshape.o ../tp02/myshape.cpp
+
+qrc_rsc.o: qrc_rsc.cpp 
+	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o qrc_rsc.o qrc_rsc.cpp
 
 moc_mainwindow.o: moc_mainwindow.cpp 
 	$(CXX) -c $(CXXFLAGS) $(INCPATH) -o moc_mainwindow.o moc_mainwindow.cpp

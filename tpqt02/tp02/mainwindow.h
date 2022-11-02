@@ -17,11 +17,12 @@ public:
     MainWindow(QWidget *parent = nullptr);
     ~MainWindow();
     draw * drawscrr;
+    void closeEvent (QCloseEvent *event) override;
 
 public slots:
     void openFile();
     void saveFile();
-    void quitApp();
+    int quitApp();
     void changeDraw(typeDraw);
     void colorConfig();
     void sizeConfig();

@@ -9,16 +9,15 @@
 class draw: public QWidget {
 
 private:
+  bool editing = false;
   bool drawing = false;
   bool moving = false;
-  void drawLine (int nx, int ny);
-  QImage * image;
-  QList<myshape> shapes;
-  int movingshape = 0;
+  bool resize = false;
   int shapecount= 0;
   QColor penColor = Qt::blue;
   int penWidght = 1;
-  void updateShape();
+  int resizepos = -1;
+  void diselectAll();
 
 protected:
   virtual void paintEvent(QPaintEvent *event) override;
@@ -26,9 +25,12 @@ protected:
 public:
   draw(QWidget* parent = nullptr);
   typeDraw typeD;
+  QList<myshape> shapes;
   void mousePressEvent(QMouseEvent *event) override;
   void mouseMoveEvent(QMouseEvent *event) override;
   void mouseReleaseEvent(QMouseEvent *event) override;
+  void mouseDoubleClickEvent(QMouseEvent *event) override;
+
   void setTypeD(typeDraw typeD);
 
   void setColor(QColor ncolor);
